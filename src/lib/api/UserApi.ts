@@ -1,14 +1,12 @@
 const baseUrl = import.meta.env.VITE_API_PATH;
 
-export const userRegister = async ({
-  username,
-  password,
-  name,
-}: {
+interface IUser {
   username: string;
   password: string;
   name: string;
-}) => {
+}
+
+export const userRegister = async ({ username, password, name }: IUser) => {
   return await fetch(`${baseUrl}/users`, {
     method: "POST",
     headers: {
