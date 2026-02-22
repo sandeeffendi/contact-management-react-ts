@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { alertError, alertSuccess } from "../../lib/alert/alert";
 import { userRegister } from "../../lib/api/UserApi";
 
@@ -158,13 +158,13 @@ export function UserRegister() {
 
         {/* already have account text button */}
         <div className="text-center text-sm text-gray-400">
-          Already have an account?{" "}
-          <a
-            href="index.html"
+          Already have an account?
+          <Link
+            to="/login"
             className="text-blue-400 hover:text-blue-300 font-medium transition-colors duration-200"
           >
             Sign in
-          </a>
+          </Link>
         </div>
       </form>
     </div>
