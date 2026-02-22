@@ -1,4 +1,41 @@
+import { useState } from "react";
+import { useNavigate } from "react-router";
+import { alertError, alertSuccess } from "../../lib/alert/alert";
+import { userRegister } from "../../lib/api/UserApi";
+
 export function UserRegister() {
+  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate();
+
+  //Handle Submit Function
+  const handleSumbit = async () => {
+    if (password !== confirmPassword) {
+      await alertError("Password is not match!");
+      return;
+    }
+
+    const response = await userRegister({
+      username: username,
+      name: name,
+      password: password,
+    });
+
+    const responseBody = await response.json();
+    console.log(responseBody);
+
+    if (response.status === 200) {
+      await alertSuccess("User Created Succesfully");
+      await navigate({
+        pathname: "/login",
+      });
+    } else {
+      await alertError(responseBody.errors);
+    }
+  };
+
   return (
     <div className="animate-fade-in bg-gray-800 bg-opacity-80 p-8 rounded-xl shadow-custom border border-gray-700 backdrop-blur-sm w-full max-w-md">
       <div className="text-center mb-8">
@@ -8,7 +45,8 @@ export function UserRegister() {
         <h1 className="text-3xl font-bold text-white">Contact Management</h1>
         <p className="text-gray-300 mt-2">Create a new account</p>
       </div>
-      <form>
+      <form onSubmit={handleSumbit}>
+        {/* username formfield */}
         <div className="mb-4">
           <label
             htmlFor="username"
@@ -27,9 +65,13 @@ export function UserRegister() {
               className="w-full pl-10 pr-3 py-3 bg-gray-700 bg-opacity-50 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
               placeholder="Choose a username"
               required
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
             />
           </div>
         </div>
+
+        {/* fullname formfield */}
         <div className="mb-4">
           <label
             htmlFor="name"
@@ -48,9 +90,13 @@ export function UserRegister() {
               className="w-full pl-10 pr-3 py-3 bg-gray-700 bg-opacity-50 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
               placeholder="Enter your full name"
               required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
             />
           </div>
         </div>
+
+        {/* password formfield */}
         <div className="mb-4">
           <label
             htmlFor="password"
@@ -69,9 +115,13 @@ export function UserRegister() {
               className="w-full pl-10 pr-3 py-3 bg-gray-700 bg-opacity-50 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
               placeholder="Create a password"
               required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
         </div>
+
+        {/* confirm password formfield */}
         <div className="mb-6">
           <label
             htmlFor="confirm_password"
@@ -90,9 +140,13 @@ export function UserRegister() {
               className="w-full pl-10 pr-3 py-3 bg-gray-700 bg-opacity-50 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
               placeholder="Confirm your password"
               required
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </div>
         </div>
+
+        {/* register button */}
         <div className="mb-6">
           <button
             type="submit"
@@ -101,6 +155,8 @@ export function UserRegister() {
             <i className="fas fa-user-plus mr-2" /> Register
           </button>
         </div>
+
+        {/* already have account text button */}
         <div className="text-center text-sm text-gray-400">
           Already have an account?{" "}
           <a
