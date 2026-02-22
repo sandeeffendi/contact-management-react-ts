@@ -1,6 +1,35 @@
-import { Link } from "react-router";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router";
+import { alertError, alertSuccess } from "../../lib/alert/alert";
+import { userLogin } from "../../lib/api/UserApi";
 
 export function UserLogin() {
+  const [form, setForm] = useState({
+    username: "",
+    password: "",
+  });
+  const navigate = useNavigate();
+
+  // handle submit function
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const response = await userLogin({
+      username: form.username,
+      password: form.password,
+    });
+
+    const responseBody = await response.json();
+    console.log(responseBody);
+
+    if (response.status === 200) {
+      await alertSuccess("Login Success");
+      navigate("/dashboard");
+    } else {
+      await alertError(responseBody.errors);
+    }
+  };
+
   return (
     <div className="animate-fade-in bg-gray-800 bg-opacity-80 p-8 rounded-xl shadow-custom border border-gray-700 backdrop-blur-sm w-full max-w-md">
       <div className="text-center mb-8">
@@ -10,7 +39,7 @@ export function UserLogin() {
         <h1 className="text-3xl font-bold text-white">Contact Management</h1>
         <p className="text-gray-300 mt-2">Sign In</p>
       </div>
-      <form>
+      <form onSubmit={handleSubmit}>
         {/* username field */}
         <div className="mb-4">
           <label
@@ -30,29 +59,10 @@ export function UserLogin() {
               className="w-full pl-10 pr-3 py-3 bg-gray-700 bg-opacity-50 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
               placeholder="Choose a username"
               required
-            />
-          </div>
-        </div>
-
-        {/* name field */}
-        <div className="mb-4">
-          <label
-            htmlFor="name"
-            className="block text-gray-300 text-sm font-medium mb-2"
-          >
-            Full Name
-          </label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <i className="fas fa-id-card text-gray-500" />
-            </div>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              className="w-full pl-10 pr-3 py-3 bg-gray-700 bg-opacity-50 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-              placeholder="Enter your full name"
-              required
+              value={form.username}
+              onChange={(e) =>
+                setForm((prev) => ({ ...prev, username: e.target.value }))
+              }
             />
           </div>
         </div>
@@ -76,6 +86,10 @@ export function UserLogin() {
               className="w-full pl-10 pr-3 py-3 bg-gray-700 bg-opacity-50 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
               placeholder="Create a password"
               required
+              value={form.password}
+              onChange={(e) =>
+                setForm((prev) => ({ ...prev, password: e.target.value }))
+              }
             />
           </div>
         </div>
