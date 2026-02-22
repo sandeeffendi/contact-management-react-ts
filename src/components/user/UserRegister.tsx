@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { alertError, alertSuccess } from "../../lib/alert/alert";
 import { userRegister } from "../../lib/api/UserApi";
@@ -11,7 +11,9 @@ export function UserRegister() {
   const navigate = useNavigate();
 
   //Handle Submit Function
-  const handleSumbit = async () => {
+  const handleSumbit = async (e : React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     if (password !== confirmPassword) {
       await alertError("Password is not match!");
       return;
