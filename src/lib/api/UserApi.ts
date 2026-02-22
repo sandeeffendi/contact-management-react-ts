@@ -9,7 +9,7 @@ export const userRegister = async ({
   password: string;
   name: string;
 }) => {
-  return await fetch(baseUrl, {
+  return await fetch(`${baseUrl}/users`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
